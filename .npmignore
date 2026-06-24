@@ -1,6 +1,9 @@
 .vscodeignore
+.gitignore
 .vscode/**
 src/**
+mockups/**
+release/**
 *.tgz
 *.vsix
 tsconfig.json

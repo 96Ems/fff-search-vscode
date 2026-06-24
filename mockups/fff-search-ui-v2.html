@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FFF Search UI Mockup v2</title>
+  <style>
+    :root {
+      --bg: #1e1e1e;
+      --panel: #181818;
+      --panel-2: #202020;
+      --panel-3: #252526;
+      --border: #333333;
+      --border-soft: #2a2a2a;
+      --text: #cccccc;
+      --muted: #8d8d8d;
+      --muted-2: #6f6f6f;
+      --accent: #3794ff;
+      --accent-soft: rgba(55, 148, 255, 0.14);
+      --good: #89d185;
+      --warn: #cca700;
+      --match-bg: rgba(234, 92, 0, 0.32);
+      --match-fg: #ffd7ba;
+      --radius: 6px;
+      --mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      --sans: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(55, 148, 255, 0.08), transparent 32rem),
+        var(--bg);
+      color: var(--text);
+      font: 13px/1.4 var(--sans);
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: 390px minmax(520px, 780px);
+      gap: 28px;
+      align-items: start;
+      padding: 28px;
+    }
+
+    .caption {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0 0 10px;
+    }
+
+    .sidebar {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+    }
+
+    .side-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 34px;
+      padding: 0 10px 0 12px;
+      border-bottom: 1px solid var(--border-soft);
+      color: #eeeeee;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .icon-button {
+      display: inline-grid;
+      place-items: center;
+      min-width: 24px;
+      height: 24px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .icon-button:hover { background: var(--panel-3); color: var(--text); }
+
+    .root-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 10px 7px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--good);
+      box-shadow: 0 0 0 3px rgba(137, 209, 133, 0.12);
+      flex: 0 0 auto;
+    }
+
+    .path { overflow: hidden; text-overflow: ellipsis; }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 8px;
+      gap: 6px;
+    }
+
+    .tab {
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      color: var(--muted);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      border-color: rgba(55, 148, 255, 0.4);
+      background: var(--accent-soft);
+      color: #dceeff;
+    }
+
+    .search-box {
+      padding: 0 8px 8px;
+    }
+
+    .query-wrap {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      border: 1px solid #3c3c3c;
+      border-radius: var(--radius);
+      background: #111111;
+    }
+
+    .query-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(55, 148, 255, 0.25);
+    }
+
+    input {
+      width: 100%;
+      height: 32px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      padding: 0 10px;
+      font: 13px var(--sans);
+    }
+
+    .kbd {
+      margin-right: 7px;
+      padding: 1px 5px 2px;
+      border: 1px solid var(--border);
+      border-bottom-color: #202020;
+      border-radius: 4px;
+      color: var(--muted-2);
+      font: 11px var(--mono);
+    }
+
+    .mode-row {
+      display: flex;
+      gap: 5px;
+      padding: 8px 0 0;
+      overflow-x: auto;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--panel-2);
+      color: var(--muted);
+      padding: 3px 8px 4px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      border-color: rgba(55, 148, 255, 0.45);
+      background: var(--accent-soft);
+      color: #cfe8ff;
+    }
+
+    .pane[hidden] { display: none; }
+
+    .filters {
+      margin: 0 8px 8px;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.018);
+    }
+
+    .filters summary {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 8px;
+      color: var(--muted);
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .filters summary::-webkit-details-marker { display: none; }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 0 8px 8px;
+    }
+
+    .mini-input {
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: #141414;
+      color: var(--text);
+      padding: 0 8px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+      color: var(--muted);
+    }
+
+    .toolbar-actions { display: flex; gap: 3px; }
+
+    .results { padding: 6px 0 10px; }
+
+    .group {
+      margin: 0 6px 4px;
+      border-radius: var(--radius);
+    }
+
+    .group.collapsed .match-list { display: none; }
+
+    .group-head {
+      display: grid;
+      grid-template-columns: 18px 1fr auto;
+      align-items: center;
+      gap: 5px;
+      min-height: 30px;
+      padding: 0 6px;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    .group-head:hover { background: var(--panel-2); }
+
+    .chev { color: var(--muted); font-size: 12px; }
+
+    .file-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #e7e7e7;
+      font-weight: 500;
+    }
+
+    .badge {
+      color: var(--muted);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .match-list {
+      margin-left: 20px;
+      border-left: 1px solid var(--border-soft);
+    }
+
+    .match {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 7px;
+      align-items: start;
+      padding: 4px 6px 5px 8px;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+
+    .match:hover { background: var(--panel-2); }
+
+    .line-no {
+      color: var(--muted-2);
+      text-align: right;
+      font: 12px var(--mono);
+      padding-top: 1px;
+    }
+
+    .line-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #cfcfcf;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    mark {
+      color: var(--match-fg);
+      background: var(--match-bg);
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 2px;
+      opacity: 0;
+    }
+
+    .match:hover .row-actions, .group-head:hover .row-actions { opacity: 1; }
+
+    .ghost {
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--muted);
+      padding: 1px 4px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    .ghost:hover { background: #303030; color: var(--text); }
+
+    .mock-right { display: grid; gap: 18px; }
+
+    .quickpick {
+      overflow: hidden;
+      border: 1px solid #454545;
+      border-radius: 8px;
+      background: #252526;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .qp-input {
+      height: 42px;
+      border-bottom: 1px solid var(--border);
+      background: #1b1b1b;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      color: #e9e9e9;
+      font: 14px var(--sans);
+    }
+
+    .qp-item {
+      display: grid;
+      grid-template-columns: 86px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 10px;
+      border-top: 1px solid rgba(255,255,255,0.035);
+    }
+
+    .qp-item.active { background: #094771; }
+
+    .qp-loc {
+      color: #d6ebff;
+      font: 12px var(--mono);
+      white-space: nowrap;
+    }
+
+    .qp-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font: 13px var(--mono);
+    }
+
+    .qp-path {
+      color: rgba(255,255,255,0.66);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .notes {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(24, 24, 24, 0.7);
+      padding: 14px 16px;
+    }
+
+    .notes h2 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #eeeeee;
+    }
+
+    .notes ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .notes li { margin: 4px 0; }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      max-width: 360px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #252526;
+      color: var(--text);
+      box-shadow: 0 14px 42px rgba(0, 0, 0, 0.36);
+      padding: 10px 12px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 120ms ease, transform 120ms ease;
+      pointer-events: none;
+      font-size: 12px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section>
+      <p class="caption">Sidebar mockup, compact VS Code-native layout</p>
+      <div class="sidebar">
+        <div class="side-title">
+          <span>FFF Search</span>
+          <button class="icon-button" title="Refresh">↻</button>
+        </div>
+
+        <div class="root-row" title="C:\_ddm\projects\g25">
+          <span class="dot"></span>
+          <span class="path">C:\_ddm\projects\g25</span>
+        </div>
+
+        <div class="tabs">
+          <button class="tab" data-tab="files">Files</button>
+          <button class="tab active" data-tab="text">Text</button>
+        </div>
+
+        <section class="pane" data-pane="files" hidden>
+          <div class="search-box">
+            <div class="query-wrap">
+              <input value="phhal pmu" aria-label="Find file" />
+              <span class="kbd">Enter</span>
+            </div>
+            <div class="mode-row">
+              <span class="chip active">Fuzzy path</span>
+              <span class="chip">*.c, *.h</span>
+              <span class="chip">git:modified</span>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <span>30 files</span>
+            <span class="toolbar-actions"><button class="ghost" data-toast="Copy selected path">Copy path</button></span>
+          </div>
+
+          <div class="results">
+            <div class="match">
+              <span class="line-no">C</span>
+              <span class="line-text">firmware/pmu/<mark>phHal_Pmu.c</mark></span>
+              <span class="row-actions"><button class="ghost">side</button></span>
+            </div>
+            <div class="match">
+              <span class="line-no">H</span>
+              <span class="line-text">firmware/config/pmu/<mark>phHal_Pmu.h</mark></span>
+              <span class="row-actions"><button class="ghost">side</button></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="pane" data-pane="text">
+        <div class="search-box">
+          <div class="query-wrap">
+            <input id="textInput" value="eVddpaToBeSetted" aria-label="Search text" />
+            <span class="kbd">Ctrl Enter</span>
+          </div>
+          <div class="mode-row">
+            <span class="chip active">Auto → Plain</span>
+            <span class="chip">Smart case</span>
+            <span class="chip">Typo fallback</span>
+            <span class="chip">*.c, *.h</span>
+          </div>
+        </div>
+
+        <details class="filters">
+          <summary><span>Filters</span><span>include, exclude, type, git</span></summary>
+          <div class="filter-grid">
+            <input class="mini-input" value="*.c, *.h" />
+            <input class="mini-input" placeholder="Exclude: build/; generated/" />
+            <input class="mini-input" placeholder="Scope: firmware/" />
+            <input class="mini-input" value="C/C++" />
+          </div>
+        </details>
+
+        <div class="toolbar">
+          <span>14 matches in 6 files</span>
+          <span class="toolbar-actions">
+            <button class="ghost" data-collapse-all>Collapse all</button>
+            <button class="ghost" data-expand-all>Expand all</button>
+          </span>
+        </div>
+
+        <div class="results">
+          <article class="group">
+            <div class="group-head" data-toggle-group>
+              <span class="chev">▾</span>
+              <span class="file-name">firmware/phHal_Pmu.c</span>
+              <span class="badge">4</span>
+            </div>
+            <div class="match-list">
+              <div class="match">
+                <span class="line-no">1284</span>
+                <span class="line-text">status = Pmu_SetVddpaVoltage(<mark>eVddpaToBeSetted</mark>, timeout);</span>
+                <span class="row-actions"><button class="ghost">side</button><button class="ghost">copy</button></span>
+              </div>
+              <div class="match">
+                <span class="line-no">1321</span>
+                <span class="line-text">if (<mark>eVddpaToBeSetted</mark> != currentVddpa) {</span>
+                <span class="row-actions"><button class="ghost">side</button><button class="ghost">copy</button></span>
+              </div>
+              <div class="match">
+                <span class="line-no">1377</span>
+                <span class="line-text">trace_vddpa_update(<mark>eVddpaToBeSetted</mark>, pmuState);</span>
+                <span class="row-actions"><button class="ghost">side</button><button class="ghost">copy</button></span>
+              </div>
+            </div>
+          </article>
+
+          <article class="group collapsed">
+            <div class="group-head" data-toggle-group>
+              <span class="chev">▸</span>
+              <span class="file-name">utest/tests_firmware/wlc_row/test_wlc_row_mfw.py</span>
+              <span class="badge">2</span>
+            </div>
+          </article>
+
+          <article class="group">
+            <div class="group-head" data-toggle-group>
+              <span class="chev">▾</span>
+              <span class="file-name">firmware/config/pmu/voltage_table.h</span>
+              <span class="badge">1</span>
+            </div>
+            <div class="match-list">
+              <div class="match">
+                <span class="line-no">72</span>
+                <span class="line-text">extern uint8_t <mark>eVddpaToBeSetted</mark>;</span>
+                <span class="row-actions"><button class="ghost">side</button><button class="ghost">copy</button></span>
+              </div>
+            </div>
+          </article>
+        </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="mock-right">
+      <div>
+        <p class="caption">Command palette text search result shape</p>
+        <div class="quickpick">
+          <div class="qp-input">eVddpaToBeSetted</div>
+          <div class="qp-item active">
+            <span class="qp-loc">phHal_Pmu.c:1284</span>
+            <span class="qp-text">status = Pmu_SetVddpaVoltage(<mark>eVddpaToBeSetted</mark>, timeout);</span>
+            <span class="qp-path">firmware/pmu</span>
+          </div>
+          <div class="qp-item">
+            <span class="qp-loc">phHal_Pmu.c:1321</span>
+            <span class="qp-text">if (<mark>eVddpaToBeSetted</mark> != currentVddpa) {</span>
+            <span class="qp-path">firmware/pmu</span>
+          </div>
+          <div class="qp-item">
+            <span class="qp-loc">voltage_table.h:72</span>
+            <span class="qp-text">extern uint8_t <mark>eVddpaToBeSetted</mark>;</span>
+            <span class="qp-path">firmware/config/pmu</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <h2>UX decisions in this mockup</h2>
+        <ul>
+          <li>No banner, no dashboard. The root/status stays one quiet row.</li>
+          <li>Search input is primary; filters are secondary and collapsible.</li>
+          <li>Active mode is shown as chips, not heavyweight controls.</li>
+          <li>Text results optimize for scanning: file header, line number, monospace match line.</li>
+          <li>QuickPick uses location first, snippet second, directory last.</li>
+          <li>Actions stay hidden until hover to reduce visual noise.</li>
+        </ul>
+      </div>
+
+      <div class="notes">
+        <h2>Shortcuts proposed</h2>
+        <ul>
+          <li><strong>/</strong>: focus current search input.</li>
+          <li><strong>Ctrl+1</strong>: switch to Files.</li>
+          <li><strong>Ctrl+2</strong>: switch to Text.</li>
+          <li><strong>Ctrl+Left</strong>: collapse all text result groups.</li>
+          <li><strong>Ctrl+Right</strong>: expand all text result groups.</li>
+          <li><strong>Enter</strong>: open selected result.</li>
+          <li><strong>Ctrl+Enter</strong>: open selected result to side.</li>
+          <li><strong>Esc</strong>: clear search when input is focused.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script>
+    const tabs = [...document.querySelectorAll('[data-tab]')];
+    const panes = [...document.querySelectorAll('[data-pane]')];
+    const toast = document.getElementById('toast');
+    let toastTimer;
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+
+    function switchTab(tab) {
+      tabs.forEach((button) => button.classList.toggle('active', button.dataset.tab === tab));
+      panes.forEach((pane) => pane.hidden = pane.dataset.pane !== tab);
+      showToast(tab === 'files' ? 'Files mode' : 'Text mode');
+    }
+
+    function setAllGroupsCollapsed(collapsed) {
+      document.querySelectorAll('.group').forEach((group) => setGroupCollapsed(group, collapsed));
+      showToast(collapsed ? 'Collapsed all' : 'Expanded all');
+    }
+
+    function setGroupCollapsed(group, collapsed) {
+      group.classList.toggle('collapsed', collapsed);
+      const chev = group.querySelector('.chev');
+      if (chev) chev.textContent = collapsed ? '▸' : '▾';
+    }
+
+    function focusCurrentInput() {
+      const activePane = panes.find((pane) => !pane.hidden);
+      const input = activePane && activePane.querySelector('input');
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    }
+
+    tabs.forEach((button) => button.addEventListener('click', () => switchTab(button.dataset.tab)));
+    document.querySelectorAll('[data-toggle-group]').forEach((head) => {
+      head.addEventListener('click', () => setGroupCollapsed(head.closest('.group'), !head.closest('.group').classList.contains('collapsed')));
+    });
+    document.querySelector('[data-collapse-all]').addEventListener('click', () => setAllGroupsCollapsed(true));
+    document.querySelector('[data-expand-all]').addEventListener('click', () => setAllGroupsCollapsed(false));
+    document.querySelectorAll('[data-toast]').forEach((button) => button.addEventListener('click', () => showToast(button.dataset.toast)));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        event.preventDefault();
+        focusCurrentInput();
+      }
+      if (event.ctrlKey && event.key === '1') {
+        event.preventDefault();
+        switchTab('files');
+      }
+      if (event.ctrlKey && event.key === '2') {
+        event.preventDefault();
+        switchTab('text');
+      }
+      if (event.ctrlKey && event.key === 'ArrowLeft') {
+        event.preventDefault();
+        setAllGroupsCollapsed(true);
+      }
+      if (event.ctrlKey && event.key === 'ArrowRight') {
+        event.preventDefault();
+        setAllGroupsCollapsed(false);
+      }
+      if (event.key === 'Escape' && document.activeElement.tagName === 'INPUT') {
+        document.activeElement.value = '';
+        showToast('Search cleared');
+      }
+      if (event.key === 'Enter') {
+        showToast(event.ctrlKey ? 'Open to side' : 'Open result');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,6 +1,9 @@
 .npmignore
+.gitignore
 .vscode/**
 src/**
+mockups/**
+release/**
 *.tgz
 *.vsix
 *.map

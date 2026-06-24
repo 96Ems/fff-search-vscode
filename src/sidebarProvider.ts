@@ -145,33 +145,53 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { padding: 0 10px 16px; color: var(--vscode-foreground); font-family: var(--vscode-font-family); font-size: var(--vscode-font-size); }
-    .root { color: var(--vscode-descriptionForeground); font-size: 11px; margin: 8px 0 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .tabs { display: flex; gap: 4px; margin-bottom: 8px; }
-    .toolbar { display: flex; gap: 4px; margin: 6px 0; }
+    :root { --border: var(--vscode-sideBarSectionHeader-border, #333); --soft: color-mix(in srgb, var(--vscode-sideBar-background) 78%, var(--vscode-foreground) 22%); --chip: color-mix(in srgb, var(--vscode-button-secondaryBackground) 70%, transparent); }
+    * { box-sizing: border-box; }
+    body { padding: 0 0 12px; color: var(--vscode-foreground); background: var(--vscode-sideBar-background); font-family: var(--vscode-font-family); font-size: var(--vscode-font-size); }
     button, input, select { font: inherit; }
-    button { border: 1px solid var(--vscode-button-border, transparent); background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); padding: 4px 8px; cursor: pointer; }
-    button.active { background: var(--vscode-button-background); color: var(--vscode-button-foreground); }
-    input, select { width: 100%; box-sizing: border-box; border: 1px solid var(--vscode-input-border, transparent); background: var(--vscode-input-background); color: var(--vscode-input-foreground); padding: 5px 7px; margin-bottom: 6px; }
-    .row { display: flex; gap: 6px; align-items: center; }
-    .row > * { flex: 1; }
-    label { display: flex; gap: 6px; align-items: center; color: var(--vscode-descriptionForeground); font-size: 11px; margin: 4px 0; }
-    label input { width: auto; margin: 0; }
-    .advanced { border-top: 1px solid var(--vscode-sideBarSectionHeader-border); margin: 8px 0; padding-top: 8px; }
-    .status { color: var(--vscode-descriptionForeground); font-size: 11px; margin: 8px 0; }
-    .item, .fileGroup { border-radius: 4px; padding: 5px 6px; margin: 2px 0; }
+    button { cursor: pointer; }
+    .root { display: flex; gap: 7px; align-items: center; min-height: 30px; padding: 7px 10px; color: var(--vscode-descriptionForeground); border-bottom: 1px solid var(--border); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .root::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--vscode-testing-iconPassed, #89d185); box-shadow: 0 0 0 3px color-mix(in srgb, var(--vscode-testing-iconPassed, #89d185) 18%, transparent); flex: 0 0 auto; }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; }
+    .tabs button { height: 28px; border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 6px; background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); }
+    .tabs button.active { border-color: color-mix(in srgb, var(--vscode-focusBorder) 58%, transparent); background: color-mix(in srgb, var(--vscode-focusBorder) 16%, transparent); color: var(--vscode-foreground); }
+    .search-box { padding: 0 8px 8px; }
+    .query-wrap { display: grid; grid-template-columns: 1fr auto; align-items: center; border: 1px solid var(--vscode-input-border, #3c3c3c); border-radius: 6px; background: var(--vscode-input-background); }
+    .query-wrap:focus-within { border-color: var(--vscode-focusBorder); box-shadow: 0 0 0 1px color-mix(in srgb, var(--vscode-focusBorder) 35%, transparent); }
+    input, select { width: 100%; min-width: 0; border: 0; outline: 0; background: var(--vscode-input-background); color: var(--vscode-input-foreground); }
+    .query-wrap input { height: 32px; padding: 0 9px; background: transparent; }
+    .kbd { margin-right: 7px; padding: 1px 5px 2px; border: 1px solid var(--border); border-radius: 4px; color: var(--vscode-descriptionForeground); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 10px; }
+    .mode-row { display: flex; gap: 5px; padding-top: 7px; overflow-x: auto; }
+    .chip { border: 1px solid var(--border); border-radius: 999px; background: var(--chip); color: var(--vscode-descriptionForeground); padding: 3px 8px 4px; font-size: 11px; white-space: nowrap; }
+    .chip.active { border-color: color-mix(in srgb, var(--vscode-focusBorder) 48%, transparent); background: color-mix(in srgb, var(--vscode-focusBorder) 14%, transparent); color: var(--vscode-foreground); }
+    .advanced { margin: 0 8px 8px; border: 1px solid var(--border); border-radius: 6px; background: color-mix(in srgb, var(--vscode-sideBar-background) 88%, var(--vscode-foreground) 12%); }
+    .advanced summary { display: flex; justify-content: space-between; gap: 8px; padding: 7px 8px; color: var(--vscode-descriptionForeground); cursor: pointer; list-style: none; font-size: 11px; }
+    .advanced summary::-webkit-details-marker { display: none; }
+    .advanced-body { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 8px 8px; }
+    .advanced input, .advanced select { height: 28px; border: 1px solid var(--vscode-input-border, var(--border)); border-radius: 5px; padding: 0 8px; }
+    .check { display: flex; gap: 6px; align-items: center; color: var(--vscode-descriptionForeground); font-size: 11px; }
+    .check input { width: auto; height: auto; }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 31px; padding: 6px 10px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--vscode-descriptionForeground); font-size: 11px; }
+    .toolbar-actions { display: flex; gap: 3px; }
+    .ghost, .linkButton { border: 0; border-radius: 4px; background: transparent; color: var(--vscode-textLink-foreground); padding: 1px 4px; font-size: 11px; }
+    .ghost:hover, .linkButton:hover { background: var(--vscode-toolbar-hoverBackground); color: var(--vscode-foreground); }
+    .results { padding: 6px 0 10px; }
+    .status { color: var(--vscode-descriptionForeground); font-size: 11px; padding: 0 10px; }
+    .item, .fileGroup { margin: 0 6px 4px; border-radius: 6px; }
+    .item { display: grid; gap: 2px; padding: 5px 7px; cursor: pointer; }
     .item:hover, .match:hover, .fileHeader:hover { background: var(--vscode-list-hoverBackground); }
-    .path { color: var(--vscode-foreground); word-break: break-all; }
+    .path { color: var(--vscode-foreground); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .meta { color: var(--vscode-descriptionForeground); font-size: 11px; }
-    mark { color: var(--vscode-editor-findMatchForeground); background: var(--vscode-editor-findMatchHighlightBackground); padding: 0; }
-    .fileHeader { display: flex; justify-content: space-between; gap: 8px; cursor: pointer; padding: 5px 6px; border-radius: 4px; }
-    .chevron { color: var(--vscode-descriptionForeground); display: inline-block; width: 14px; }
-    .matches { margin-left: 8px; border-left: 1px solid var(--vscode-sideBarSectionHeader-border); }
+    mark { color: var(--vscode-editor-findMatchForeground); background: var(--vscode-editor-findMatchHighlightBackground); border-radius: 2px; padding: 0 1px; }
+    .fileHeader { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 5px; min-height: 30px; padding: 0 6px; border-radius: 6px; cursor: pointer; }
+    .chevron { color: var(--vscode-descriptionForeground); font-size: 12px; }
+    .matches { margin-left: 20px; border-left: 1px solid var(--border); }
     .fileGroup.collapsed .matches { display: none; }
-    .match { padding: 4px 6px; cursor: pointer; }
-    .line { color: var(--vscode-descriptionForeground); }
-    .actions { display: inline-flex; gap: 4px; margin-left: 6px; }
-    .linkButton { border: 0; padding: 0 2px; color: var(--vscode-textLink-foreground); background: transparent; }
+    .match { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 7px; align-items: start; padding: 4px 6px 5px 8px; border-radius: 0 5px 5px 0; cursor: pointer; }
+    .line { color: var(--vscode-descriptionForeground); text-align: right; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
+    .lineText { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
+    .actions { display: inline-flex; gap: 2px; opacity: 0; }
+    .item:hover .actions, .match:hover .actions, .fileHeader:hover .actions { opacity: 1; }
     .hidden { display: none; }
   </style>
 </head>
@@ -182,33 +202,35 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     <button id="textTab">Text</button>
   </div>
   <section id="filesPane">
-    <input id="fileQuery" placeholder="Find file: button *.ts !test/ git:modified" />
+    <div class="search-box"><div class="query-wrap"><input id="fileQuery" placeholder="Find file: button *.ts !test/ git:modified" /><span class="kbd">Enter</span></div><div class="mode-row"><span class="chip active">Fuzzy path</span><span class="chip">Constraints</span></div></div>
     ${filtersHtml("file")}
     <div class="status" id="fileStatus">Type to search files.</div>
-    <div id="fileResults"></div>
+    <div class="results" id="fileResults"></div>
   </section>
   <section id="textPane" class="hidden">
-    <input id="textQuery" placeholder="Search text: vddpa power, vddpa_*, re:foo.*bar" />
-    <div class="row">
-      <select id="mode">
-        <option value="auto">Auto</option>
-        <option value="plain">Plain</option>
-        <option value="regex">Regex</option>
-        <option value="fuzzy">Fuzzy</option>
-      </select>
-      <select id="caseMode">
-        <option value="smart">Smart case</option>
-        <option value="sensitive">Case sensitive</option>
-      </select>
-    </div>
-    <label><input id="fuzzyFallback" type="checkbox" checked /> Typo fallback</label>
+    <div class="search-box"><div class="query-wrap"><input id="textQuery" placeholder="Search text: vddpa power, vddpa_*, re:foo.*bar" /><span class="kbd">Ctrl Enter</span></div><div class="mode-row" id="textChips"></div></div>
+    <details class="advanced" open>
+      <summary>Search mode</summary>
+      <div class="advanced-body">
+        <select id="mode">
+          <option value="auto">Auto</option>
+          <option value="plain">Plain</option>
+          <option value="regex">Regex</option>
+          <option value="fuzzy">Fuzzy</option>
+        </select>
+        <select id="caseMode">
+          <option value="smart">Smart case</option>
+          <option value="sensitive">Case sensitive</option>
+        </select>
+        <label class="check"><input id="fuzzyFallback" type="checkbox" checked /> Typo fallback</label>
+      </div>
+    </details>
     ${filtersHtml("text")}
     <div class="toolbar">
-      <button id="collapseAll" title="Collapse all file groups">Collapse all</button>
-      <button id="expandAll" title="Expand all file groups">Expand all</button>
+      <span id="textStatus">Type to search text.</span>
+      <span class="toolbar-actions"><button class="ghost" id="collapseAll" title="Collapse all (Ctrl+Left)">Collapse all</button><button class="ghost" id="expandAll" title="Expand all (Ctrl+Right)">Expand all</button></span>
     </div>
-    <div class="status" id="textStatus">Type to search text.</div>
-    <div id="textResults"></div>
+    <div class="results" id="textResults"></div>
   </section>
   <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
@@ -221,7 +243,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     $('collapseAll').addEventListener('click', () => setAllGroupsCollapsed(true));
     $('expandAll').addEventListener('click', () => setAllGroupsCollapsed(false));
     for (const id of ['fileQuery','fileInclude','fileExclude','fileModified','fileCurrentDir','fileFileType']) $(id).addEventListener('input', schedule);
-    for (const id of ['textQuery','textInclude','textExclude','textModified','textCurrentDir','textFileType','mode','caseMode','fuzzyFallback']) $(id).addEventListener('input', schedule);
+    for (const id of ['textQuery','textInclude','textExclude','textModified','textCurrentDir','textFileType','mode','caseMode','fuzzyFallback']) $(id).addEventListener('input', () => { updateChips(); schedule(); });
+    updateChips();
 
     window.addEventListener('message', (event) => {
       const msg = event.data;
@@ -256,7 +279,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     }
     function renderFiles(msg) {
       $('fileStatus').textContent = msg.files.length + ' shown' + (msg.totalMatched ? ' of ' + msg.totalMatched : '');
-      $('fileResults').innerHTML = msg.files.map((file) => '<div class="item"><div class="path">' + highlight(file.relativePath, msg.terms) + '</div><div class="meta">' + escapeHtml(file.gitStatus || '') + actions(file.relativePath) + '</div></div>').join('');
+      $('fileResults').innerHTML = msg.files.map((file) => '<div class="item" data-open="' + attr(file.relativePath) + '"><div class="path">' + highlight(file.relativePath, msg.terms) + '</div><div class="meta">' + escapeHtml(file.gitStatus || '') + actions(file.relativePath) + '</div></div>').join('');
       bindActions($('fileResults'));
     }
     function renderText(msg) {
@@ -266,10 +289,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       bindActions($('textResults'));
     }
     function renderGroup(group) {
-      return '<div class="fileGroup"><div class="fileHeader" data-toggle><span class="path"><span class="chevron">▾</span>' + escapeHtml(group.relativePath) + '</span><span class="meta">' + group.matches.length + actions(group.relativePath) + '</span></div><div class="matches">' + group.matches.map(renderMatch).join('') + '</div></div>';
+      return '<div class="fileGroup"><div class="fileHeader" data-toggle><span class="chevron">▾</span><span class="path">' + escapeHtml(group.relativePath) + '</span><span class="meta">' + group.matches.length + actions(group.relativePath) + '</span></div><div class="matches">' + group.matches.map(renderMatch).join('') + '</div></div>';
     }
     function renderMatch(match) {
-      return '<div class="match" data-open="' + attr(match.relativePath) + '" data-line="' + match.lineNumber + '" data-col="' + match.col + '" data-len="' + firstLen(match) + '"><span class="line">' + match.lineNumber + ':' + (match.col + 1) + '</span> ' + highlightRanges(match.lineContent, match.matchRanges) + actions(match.relativePath, match.lineNumber, match.col, firstLen(match)) + '</div>';
+      return '<div class="match" data-open="' + attr(match.relativePath) + '" data-line="' + match.lineNumber + '" data-col="' + match.col + '" data-len="' + firstLen(match) + '"><span class="line">' + match.lineNumber + ':' + (match.col + 1) + '</span><span class="lineText">' + highlightRanges(match.lineContent, match.matchRanges) + '</span>' + actions(match.relativePath, match.lineNumber, match.col, firstLen(match)) + '</div>';
     }
     function actions(path, line, col, len) {
       const attrs = ' data-path="' + attr(path) + '"' + (line ? ' data-line="' + line + '" data-col="' + col + '" data-len="' + len + '"' : '');
@@ -297,6 +320,35 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         if (chevron) chevron.textContent = collapsed ? '▸' : '▾';
       });
     }
+    function focusActiveSearch() {
+      const input = activeTab === 'files' ? $('fileQuery') : $('textQuery');
+      input.focus();
+      input.select();
+    }
+    function updateChips() {
+      const mode = $('mode').value;
+      const caseMode = $('caseMode').value === 'smart' ? 'Smart case' : 'Case sensitive';
+      const fallback = $('fuzzyFallback').checked ? 'Typo fallback' : 'No fallback';
+      const include = $('textInclude').value.trim();
+      const fileType = $('textFileType').value;
+      const filters = include || fileType ? '<span class="chip">' + escapeHtml([include, fileType].filter(Boolean).join(', ')) + '</span>' : '';
+      $('textChips').innerHTML = '<span class="chip active">' + escapeHtml(mode === 'auto' ? 'Auto mode' : mode) + '</span><span class="chip">' + caseMode + '</span><span class="chip">' + fallback + '</span>' + filters;
+    }
+    document.addEventListener('keydown', (event) => {
+      if (event.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
+        event.preventDefault();
+        focusActiveSearch();
+      }
+      if (event.ctrlKey && event.key === '1') { event.preventDefault(); switchTab('files'); focusActiveSearch(); }
+      if (event.ctrlKey && event.key === '2') { event.preventDefault(); switchTab('text'); focusActiveSearch(); }
+      if (event.ctrlKey && event.key === 'ArrowLeft') { event.preventDefault(); setAllGroupsCollapsed(true); }
+      if (event.ctrlKey && event.key === 'ArrowRight') { event.preventDefault(); setAllGroupsCollapsed(false); }
+      if (event.key === 'Escape' && document.activeElement.tagName === 'INPUT') {
+        document.activeElement.value = '';
+        updateChips();
+        schedule();
+      }
+    });
     function firstLen(match) { return match.matchRanges && match.matchRanges[0] ? match.matchRanges[0][1] - match.matchRanges[0][0] : 0; }
     function highlight(value, terms) {
       let out = escapeHtml(value);
@@ -370,12 +422,11 @@ function locationOptions(message: { [key: string]: unknown }) {
 
 function filtersHtml(prefix: string): string {
   const id = (name: string) => `${prefix}${name}`;
-  return `<div class="advanced">
-    <div class="row">
+  return `<details class="advanced">
+    <summary><span>Filters</span><span>include, exclude, type, git</span></summary>
+    <div class="advanced-body">
       <input id="${id("Include")}" placeholder="Include: *.c, *.h" />
       <input id="${id("Exclude")}" placeholder="Exclude: build/; generated/" />
-    </div>
-    <div class="row">
       <input id="${id("CurrentDir")}" placeholder="Current dir scope: src/foo/" />
       <select id="${id("FileType")}">
         <option value="">Any type</option>
@@ -385,9 +436,9 @@ function filtersHtml(prefix: string): string {
         <option value="*.rs">Rust</option>
         <option value="*.py">Python</option>
       </select>
+      <label class="check"><input id="${id("Modified")}" type="checkbox" /> git:modified</label>
     </div>
-    <label><input id="${id("Modified")}" type="checkbox" /> git:modified</label>
-  </div>`;
+  </details>`;
 }
 
 function config<T>(key: string): T {
