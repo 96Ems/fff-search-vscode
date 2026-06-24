@@ -1,0 +1,164 @@
+{
+  "name": "fff-search-extension",
+  "displayName": "FFF Search",
+  "description": "Fast file and text search for VS Code powered by FFF.",
+  "version": "0.0.1",
+  "publisher": "local",
+  "type": "module",
+  "license": "MIT",
+  "icon": "media/fff-icon.png",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:fffSearch.findFile",
+    "onCommand:fffSearch.findFileToSide",
+    "onCommand:fffSearch.searchText",
+    "onCommand:fffSearch.rescan",
+    "onCommand:fffSearch.restartIndex",
+    "onCommand:fffSearch.showHealth",
+    "onView:fffSearch.sidebar"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "fffSearch.findFile",
+        "title": "FFF: Find File"
+      },
+      {
+        "command": "fffSearch.findFileToSide",
+        "title": "FFF: Find File to Side"
+      },
+      {
+        "command": "fffSearch.searchText",
+        "title": "FFF: Search Text"
+      },
+      {
+        "command": "fffSearch.rescan",
+        "title": "FFF: Rescan"
+      },
+      {
+        "command": "fffSearch.restartIndex",
+        "title": "FFF: Restart Index"
+      },
+      {
+        "command": "fffSearch.showHealth",
+        "title": "FFF: Show Health"
+      }
+    ],
+    "configuration": {
+      "title": "FFF Search",
+      "properties": {
+        "fffSearch.warmupOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Start indexing the active workspace folder after VS Code startup."
+        },
+        "fffSearch.firstUseScanTimeoutMs": {
+          "type": "number",
+          "default": 10000,
+          "minimum": 0,
+          "description": "Maximum time to wait for the FFF index on first interactive use."
+        },
+        "fffSearch.maxQuickFileResults": {
+          "type": "number",
+          "default": 30,
+          "minimum": 1,
+          "description": "Maximum file results shown in the QuickPick."
+        },
+        "fffSearch.maxQuickTextResults": {
+          "type": "number",
+          "default": 15,
+          "minimum": 1,
+          "description": "Maximum text matches shown in the QuickPick."
+        },
+        "fffSearch.maxSidebarFileResults": {
+          "type": "number",
+          "default": 50,
+          "minimum": 1,
+          "description": "Maximum file results shown in the FFF sidebar."
+        },
+        "fffSearch.maxSidebarTextResults": {
+          "type": "number",
+          "default": 100,
+          "minimum": 1,
+          "description": "Maximum text matches shown in the FFF sidebar."
+        },
+        "fffSearch.maxMatchesPerFile": {
+          "type": "number",
+          "default": 20,
+          "minimum": 1,
+          "description": "Maximum text matches collected per file."
+        },
+        "fffSearch.enableContentIndexing": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable FFF content indexing for faster repeated text searches."
+        },
+        "fffSearch.followSymlinks": {
+          "type": "boolean",
+          "default": false,
+          "description": "Reserved for future FFF support. Symlinks are not followed by this extension."
+        },
+        "fffSearch.enableFsRootScanning": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow indexing a filesystem root such as C:\\ or /."
+        },
+        "fffSearch.enableHomeDirScanning": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow indexing the user home directory."
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "fffSearch",
+          "title": "FFF",
+          "icon": "media/fff-activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "fffSearch": [
+        {
+          "id": "fffSearch.sidebar",
+          "name": "Search",
+          "type": "webview"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "fffSearch.findFile",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p"
+      },
+      {
+        "command": "fffSearch.searchText",
+        "key": "ctrl+alt+f",
+        "mac": "cmd+alt+f"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "check": "tsc --noEmit -p ./"
+  },
+  "dependencies": {
+    "@ff-labs/fff-node": "^0.9.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.0"
+  }
+}

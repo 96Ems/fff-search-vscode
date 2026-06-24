@@ -1,0 +1,12 @@
+.npmignore
+.vscode/**
+src/**
+*.tgz
+*.vsix
+*.map
+tsconfig.json
+package-lock.json
+node_modules/**/*.md
+node_modules/**/test/**
+node_modules/**/tests/**
+node_modules/**/.github/**
