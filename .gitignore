@@ -2,6 +2,7 @@ node_modules/
 dist/
 *.vsix
 *.tgz
+!release/**/*.vsix
 .vscode/
 *.log
 npm-debug.log*
