@@ -10,6 +10,8 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     manager,
     vscode.window.registerWebviewViewProvider("fffSearch.sidebar", sidebar),
+    vscode.window.onDidChangeActiveTextEditor(() => sidebar.refreshRoot()),
+    vscode.workspace.onDidChangeWorkspaceFolders(() => sidebar.refreshRoot()),
     vscode.commands.registerCommand("fffSearch.findFile", () => showFileQuickPick(manager)),
     vscode.commands.registerCommand("fffSearch.findFileToSide", () => showFileQuickPick(manager, true)),
     vscode.commands.registerCommand("fffSearch.searchText", () => showTextQuickPick(manager, (query) => sidebar.showTextQuery(query))),

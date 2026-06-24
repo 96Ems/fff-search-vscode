@@ -133,7 +133,7 @@ export class IndexManager implements vscode.Disposable {
   }
 
   rootForDisplay(): string | undefined {
-    return this.lastRoot ?? this.activeRoot();
+    return this.activeRoot() ?? this.lastRoot;
   }
 
   currentFileRelativeToRoot(root: string): string | undefined {

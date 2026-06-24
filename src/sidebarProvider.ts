@@ -33,6 +33,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     }
   }
 
+  refreshRoot(): void {
+    this.postState();
+  }
+
   private async handleMessage(message: { type: string; [key: string]: unknown }): Promise<void> {
     try {
       if (message.type === "ready") {
