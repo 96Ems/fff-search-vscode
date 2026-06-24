@@ -1,0 +1,16 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="FFF Search">
+  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <text x="34" y="158"
+      font-family="Segoe Script, Brush Script MT, Comic Sans MS, cursive"
+      font-size="116"
+      font-weight="700"
+      font-style="italic"
+      letter-spacing="-17"
+      fill="currentColor"
+      stroke="currentColor"
+      stroke-width="2"
+      paint-order="stroke fill">fff</text>
+    <circle cx="184" cy="172" r="28" stroke-width="16"/>
+    <path d="M204 192l17 17" stroke-width="16"/>
+  </g>
+</svg>
