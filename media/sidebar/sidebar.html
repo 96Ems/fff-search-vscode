@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src {{cspSource}}; script-src 'nonce-{{nonce}}';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{cssUri}}">
+</head>
+<body>
+  <div class="head">
+    <div class="root" title="Active search root">
+      <span class="corner">&#9484;</span>
+      <span class="path" id="root">no root</span>
+    </div>
+    <div class="tabs">
+      <button id="filesTab" class="tab active" title="Files (Ctrl+1)"><span class="brk">[</span>files<span class="brk">]</span></button>
+      <button id="textTab" class="tab" title="Text (Ctrl+2)"><span class="brk">[</span>text<span class="brk">]</span></button>
+    </div>
+  </div>
+
+  <section id="filesPane">
+    <div class="pane-head">
+      <div class="prompt">
+        <span class="chevron">&#10095;</span>
+        <input id="fileQuery" placeholder="search files&hellip;" spellcheck="false" />
+        <button class="clear" data-clear="fileQuery" title="Clear (Esc)" tabindex="-1">&#10005;</button>
+      </div>
+      <div class="toks" id="fileToks"></div>
+      <details class="advanced" id="fileAdvanced">
+        <summary>edit filters</summary>
+        <div class="advanced-body">
+          <input id="fileInclude" placeholder="include: *.c, *.h" spellcheck="false" />
+          <input id="fileExclude" placeholder="exclude: build/" spellcheck="false" />
+          <input id="fileCurrentDir" placeholder="scope: src/foo/" spellcheck="false" />
+          <select id="fileFileType">
+            <option value="">any type</option>
+            <option value="*.ts">*.ts</option>
+            <option value="*.{ts,tsx}">*.{ts,tsx}</option>
+            <option value="c-cpp">c/c++</option>
+            <option value="*.rs">*.rs</option>
+            <option value="*.py">*.py</option>
+          </select>
+          <label class="check"><input id="fileModified" type="checkbox" /> git:modified</label>
+        </div>
+      </details>
+    </div>
+    <div class="counter">
+      <span class="cstatus" id="fileStatus">type to search files</span>
+      <span class="rule"></span>
+    </div>
+    <div class="results" id="fileResults"></div>
+  </section>
+
+  <section id="textPane" class="hidden">
+    <div class="pane-head">
+      <div class="prompt">
+        <span class="chevron">&#10095;</span>
+        <input id="textQuery" placeholder="search text&hellip; (re: fz: pl:)" spellcheck="false" />
+        <button class="clear" data-clear="textQuery" title="Clear (Esc)" tabindex="-1">&#10005;</button>
+      </div>
+      <div class="toks" id="textToks"></div>
+      <div class="status-toks">
+        <button class="stok cycle" id="modeTok" title="match mode &mdash; click to cycle"></button>
+        <button class="stok" id="caseTok" title="case-sensitive when query has capitals"></button>
+        <button class="stok" id="fallbackTok" title="retry with fuzzy on zero results"></button>
+      </div>
+      <details class="advanced" id="textAdvanced">
+        <summary>edit filters</summary>
+        <div class="advanced-body">
+          <input id="textInclude" placeholder="include: *.c, *.h" spellcheck="false" />
+          <input id="textExclude" placeholder="exclude: build/" spellcheck="false" />
+          <input id="textCurrentDir" placeholder="scope: src/foo/" spellcheck="false" />
+          <select id="textFileType">
+            <option value="">any type</option>
+            <option value="*.ts">*.ts</option>
+            <option value="*.{ts,tsx}">*.{ts,tsx}</option>
+            <option value="c-cpp">c/c++</option>
+            <option value="*.rs">*.rs</option>
+            <option value="*.py">*.py</option>
+          </select>
+          <label class="check"><input id="textModified" type="checkbox" /> git:modified</label>
+        </div>
+      </details>
+    </div>
+    <div class="counter">
+      <span class="cstatus" id="textStatus">type to search text</span>
+      <span class="rule"></span>
+      <button class="expander" id="collapseAll" title="Collapse all (Ctrl+Left)">[-] fold</button>
+      <button class="expander" id="expandAll" title="Expand all (Ctrl+Right)">[+] unfold</button>
+    </div>
+    <div class="results" id="textResults"></div>
+  </section>
+
+  <div class="keybar">
+    <span><b>&#8597;</b> move</span>
+    <span><b>&#9166;</b> open</span>
+    <span><b>^&#9166;</b> side</span>
+    <span><b>/</b> focus</span>
+  </div>
+
+  <div class="pop hidden" id="pop"></div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script nonce="{{nonce}}" src="{{jsUri}}"></script>
+</body>
+</html>

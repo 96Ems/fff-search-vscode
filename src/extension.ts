@@ -5,7 +5,7 @@ import { SidebarProvider } from "./sidebarProvider.js";
 
 export function activate(context: vscode.ExtensionContext): void {
   const manager = new IndexManager(context);
-  const sidebar = new SidebarProvider(manager);
+  const sidebar = new SidebarProvider(manager, context.extensionUri);
 
   context.subscriptions.push(
     manager,

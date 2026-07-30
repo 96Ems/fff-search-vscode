@@ -6,7 +6,8 @@ mockups/**
 release/**
 *.tgz
 *.vsix
-*.map
+**/*.map
+opencode.json
 tsconfig.json
 package-lock.json
 node_modules/**/*.md
